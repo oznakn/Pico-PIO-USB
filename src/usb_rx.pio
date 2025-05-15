@@ -15,7 +15,7 @@
 ; 17 instruction
 ;            FS(12M)  LS(1.5M)
 ; Run at     96MHz    12MHz
-; jmp_pin    d-       d+ 
+; jmp_pin    d-       d+
 ; in_pin     d+       d-
 ; both d+/d- pin should be input invert overrideed
 .program usb_edge_detector
@@ -41,7 +41,7 @@ pin_went_low:
 .wrap
 
 pin_still_high:
-    mov x, isr [2] 
+    mov x, isr [2]
     jmp x-- eop	     		    ; Jump to eop if jmp_pin and in_pin are high because both inputs are inverted
 ; Jump to here on rising edge
 pin_went_high:
@@ -89,7 +89,7 @@ pin_went_high:
 ; 15 instruction
 ;            FS(12M)  LS(1.5M)
 ; Run at     as fast as possible
-; jmp_pin    d+       d- 
+; jmp_pin    d+       d-
 ; both d+/d- pin should be input invert overrideed
 ; Fill OSR by 1 and set 0 to x before runnning this program
 .program usb_nrzi_decoder
@@ -112,7 +112,7 @@ K1:
     ; x==0
     in osr, 1
     jmp y-- irq_wait
-    
+
 pin_high:
     jmp !y flip			; ignore stuff bit, without error check
     jmp !x J1
@@ -147,7 +147,7 @@ K1:
     ; x==0
     in osr, 1
     jmp y-- irq_wait
-    
+
 pin_high:
     jmp !y flip	side db1	; ignore stuff bit, without error check
     jmp !x J1 side db1
@@ -164,12 +164,6 @@ flip:
 
 % c-sdk {
 #include "hardware/clocks.h"
-
-static __always_inline void pio_sm_set_jmp_pin(PIO pio, uint sm, uint jmp_pin) {
-  pio->sm[sm].execctrl =
-      (pio->sm[sm].execctrl & ~PIO_SM0_EXECCTRL_JMP_PIN_BITS) |
-      (jmp_pin << PIO_SM0_EXECCTRL_JMP_PIN_LSB);
-}
 
 static inline void usb_rx_fs_program_init(PIO pio, uint sm, uint offset, uint pin_dp, uint pin_dm, int pin_debug) {
   if (pin_dp < pin_dm) {
